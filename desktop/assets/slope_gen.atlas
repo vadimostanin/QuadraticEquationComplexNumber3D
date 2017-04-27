@@ -1,0 +1,18 @@
+slope_gen.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+slope_up
+  rotate: false
+  xy: 0, 0
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+slope_down
+  rotate: false
+  xy: 0, 96
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1

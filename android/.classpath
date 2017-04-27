@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" exported="true"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK" exported="true"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES" exported="true"/>
+	<classpathentry kind="src" path="/quadratic_complex-core" exported="true"/>
+	<classpathentry sourcepath="/home/vostanin/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.6.1/fc7035aa1225ad0fc5b761778ba861d533a5c0b0/gdx-backend-android-1.6.1-sources.jar" kind="lib" path="/home/vostanin/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.6.1/b9a5bc4404bab9feff8963bb0bd4685164e0166c/gdx-backend-android-1.6.1.jar" exported="true"/>
+	<classpathentry sourcepath="/home/vostanin/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.6.1/ef65c50383aed15285467f914552740b3cc38177/gdx-freetype-1.6.1-sources.jar" kind="lib" path="/home/vostanin/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.6.1/627fbfd56652cf6466c248b3fd507900b26993b8/gdx-freetype-1.6.1.jar" exported="true"/>
+	<classpathentry sourcepath="/home/vostanin/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.6.1/5f028d1c47d0adcc5000f21d8868443c5119e639/gdx-1.6.1-sources.jar" kind="lib" path="/home/vostanin/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.6.1/bb5fe9832bcfe4bbc1de6bd357085b8a2a845d9c/gdx-1.6.1.jar" exported="true"/>
+</classpath>
