@@ -26,11 +26,11 @@ public class CosSolver
     	final double x = xValue.re();
     	final double y = xValue.im();
 
-    	final double ch = ( Math.exp( x ) + Math.exp( -x ) ) / 2.0;
-        final float cosCh = ( float ) Math.cos( xValue.re() * ch );
+    	final double ch = ( Math.exp( y ) + Math.exp( ( -1 ) * y ) ) / 2.0;
+        final float cosCh = ( float ) ( Math.cos( x ) * ch );
         
-        final double sh = ( Math.exp( x ) - Math.exp( -x ) ) / 2.0;
-        final float sinSh = ( float ) Math.sin( xValue.re() * sh );
+        final double sh = ( Math.exp( y ) + Math.exp( ( -1 ) * y ) ) / 2.0;
+        final float sinSh = ( float ) ( Math.sin( x ) * sh );
         
         mYComplex.set( cosCh, ( -1 ) * sinSh );
         return mYComplex;

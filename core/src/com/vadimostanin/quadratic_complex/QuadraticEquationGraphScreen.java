@@ -381,17 +381,17 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		Gdx.gl20.glLineWidth( Constants.GL_LineWidth_Axis );
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.RED);
-		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.95f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.95f );
+		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.96f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.96f );
 		renderer.end();
 
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.GREEN);
-		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.85f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.85f );
+		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.90f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.90f );
 		renderer.end();
 
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.BLUE);
-		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.75f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.75f );
+		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.84f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.84f );
 		renderer.end();
 		Gdx.gl20.glLineWidth( Constants.GL_LineWidth_Unused );
 	}

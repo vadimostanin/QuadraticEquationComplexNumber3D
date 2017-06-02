@@ -39,6 +39,7 @@ public class CosGraphScreen implements Screen, InputProcessor
 	private Slider mSliderPointX;
 	private Slider mSliderOneGraphXSlopeIm;
 	private float mSlidedOneGraphXSlopeIm = 0.0f;
+	private Label mSlopeXILabel;
 
 	private GraphScreenUICreator mUiCreator;
 	private Matrix4 mRendererInitialMatrix = new Matrix4();
@@ -167,7 +168,7 @@ public class CosGraphScreen implements Screen, InputProcessor
 			sliderTable.add( sliderTitle ).align( Align.left );
 			sliderTable.row();
 
-			mSliderOneGraphXSlopeIm = new Slider( 0.0f, 360.0f, 0.1f, true, mSkin );
+			mSliderOneGraphXSlopeIm = new Slider( 0.0f, 180.0f, 0.05f, true, mSkin );
 //			mSliderOneGraphXSlopeIm = new Slider( 89.999f, 90.001f, 0.00001f, true, mSkin );
 
 			final float slope = 0.0f;//MyUtils.recalcSlopeAngle( ( float ) mGraphInputData.getRoot().re(), ( float ) mGraphInputData.getRoot().im() );
@@ -189,6 +190,9 @@ public class CosGraphScreen implements Screen, InputProcessor
 
 					mComplexSlopeChangeProperty.set( slopeValue );
 					mComplexSlopeListeners.onChanged( mComplexSlopeChangeProperty );
+
+					final String sLabel = String.format( "X%1$sI = %2$.1f%3$s", Constants.SymbolAngle, slopeValue, Constants.SymbolDegree );
+					mSlopeXILabel.setText( sLabel );
 				}
 			});
 			sliderTable.add( mSliderOneGraphXSlopeIm ).width( Gdx.graphics.getWidth() * 0.1f ).height( Gdx.graphics.getHeight() * 0.4f ).align( Align.left );
@@ -231,6 +235,16 @@ public class CosGraphScreen implements Screen, InputProcessor
 			legendTable.add( legendLabelX ).align( Align.right );
 		}
 		legendTable.row();
+		{
+			final float slope = 0.0f;
+			final CharSequence sLabel = String.format( "X%1$sI = %2$.1f%3$s", Constants.SymbolAngle, slope, Constants.SymbolDegree );
+			mSlopeXILabel = new Label( sLabel, mSkin );
+			final BitmapFont font = FontCache.getInstance().get( 20 );
+			final Label.LabelStyle titleStyle = new Label.LabelStyle( font, Color.BLACK );
+			mSlopeXILabel.setStyle(titleStyle);
+
+			legendTable.add( mSlopeXILabel ).align( Align.right );
+		}
 
 		mTable.row();
 		mTable.addActor( legendTable );//.align( Align.topRight );
@@ -273,17 +287,17 @@ public class CosGraphScreen implements Screen, InputProcessor
 		Gdx.gl20.glLineWidth( Constants.GL_LineWidth_Axis );
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.RED);
-		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.95f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.95f );
+		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.96f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.96f );
 		renderer.end();
 
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.GREEN);
-		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.85f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.85f );
+		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.90f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.90f );
 		renderer.end();
 
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.BLUE);
-		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.75f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.75f );
+		renderer.line( Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.84f, Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.84f );
 		renderer.end();
 		Gdx.gl20.glLineWidth( Constants.GL_LineWidth_Unused );
 	}
