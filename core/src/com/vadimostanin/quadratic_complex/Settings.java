@@ -20,7 +20,7 @@ public class Settings
     private float mFullGraphImMax = 5.0f;
     private float mFullGraphImDelta = 0.02f;
 
-    private eGraphPointsGeneratorType mGraphPointsGeneratorType = eGraphPointsGeneratorType.ImSlopeX;
+    private eGraphPointsGeneratorType mGraphPointsGeneratorType = eGraphPointsGeneratorType.QuadraticImSlopeX;
     private eGraphScreenState mGraphScreenState = eGraphScreenState.eShowOneGraph;
 
     public Settings()

@@ -326,12 +326,12 @@ public class SettingsScreen implements Screen, InputProcessor
 									 {
 										 public void clicked(InputEvent event, float x, float y )
 										 {
-											 Settings.getInstance().setGraphPointsGeneratorType( eGraphPointsGeneratorType.ImSlopeX );
+											 Settings.getInstance().setGraphPointsGeneratorType( eGraphPointsGeneratorType.QuadraticImSlopeX );
 											 System.gc();
 										 }
 									 }
 			);
-			imageButton.setChecked( Settings.getInstance().getGraphPointsGeneratorType() == eGraphPointsGeneratorType.ImSlopeX );
+			imageButton.setChecked( Settings.getInstance().getGraphPointsGeneratorType() == eGraphPointsGeneratorType.QuadraticImSlopeX );
 			buttonGroup.add( imageButton );
 			horizontalGroup.addActor( imageButton );
 			verticalGroup.addActor( horizontalGroup );
@@ -358,12 +358,12 @@ public class SettingsScreen implements Screen, InputProcessor
 									 {
 										 public void clicked(InputEvent event, float x, float y )
 										 {
-											 Settings.getInstance().setGraphPointsGeneratorType( eGraphPointsGeneratorType.ImParallelX );
+											 Settings.getInstance().setGraphPointsGeneratorType( eGraphPointsGeneratorType.CosImSlopeX );
 											 System.gc();
 										 }
 									 }
 			);
-			imageButton.setChecked( Settings.getInstance().getGraphPointsGeneratorType() == eGraphPointsGeneratorType.ImParallelX );
+			imageButton.setChecked( Settings.getInstance().getGraphPointsGeneratorType() == eGraphPointsGeneratorType.CosImSlopeX );
 			buttonGroup.add( imageButton );
 			horizontalGroup.addActor( imageButton );
 //			verticalGroup.addActor( horizontalGroup );

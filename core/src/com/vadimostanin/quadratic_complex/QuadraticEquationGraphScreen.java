@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-public class GraphScreen implements Screen, InputProcessor
+public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 {
 
 	private PerspectiveCamera camera;
@@ -55,7 +55,7 @@ public class GraphScreen implements Screen, InputProcessor
 	private Label mPointYValueLabel;
 	private Label mSlopeXILabel;
 
-	private GraphInputData mGraphInputData;
+	private QuadraticGraphInputData mGraphInputData;
 	private float mXSlope;
 
 	private GraphScreenUICreator mUiCreator;
@@ -69,7 +69,7 @@ public class GraphScreen implements Screen, InputProcessor
 	private PropertyChangeListeners mComplexSlopeListeners = new PropertyChangeListeners();
 	private ComplexSlopeChangeProperty mComplexSlopeChangeProperty = new ComplexSlopeChangeProperty();
 
-	public GraphScreen()
+	public QuadraticEquationGraphScreen()
 	{
 		renderer = new ShapeRenderer();
 		mRendererInitialMatrix.set( renderer.getProjectionMatrix() );
@@ -89,7 +89,7 @@ public class GraphScreen implements Screen, InputProcessor
 		font.setColor(Color.RED);
 	}
 
-	public void updateGraphInfo( GraphInputData graphInputData )
+	public void updateGraphInfo( QuadraticGraphInputData graphInputData )
 	{
 		mGraphInputData = graphInputData;
 		mQuadraticSolver = new QuadraticSolver( mGraphInputData.getA(), mGraphInputData.getB(), mGraphInputData.getC() );

@@ -13,9 +13,11 @@ public class ScreensCache
 {
     public enum eScreenType
     {
-        EquationSolver,
-        Graph,
-        Settings
+    	FunctionChoose,
+    	QuadraticEquationSolver,
+        QuadraticGraph,
+        CosGraph,
+        Settings,
     }
 
     private static ScreensCache mInstance = new ScreensCache();
@@ -35,12 +37,18 @@ public class ScreensCache
         }
         switch( type )
         {
-            case EquationSolver:
+        	case FunctionChoose:
+        			screen = new FunctionChooseScreen();
+        		break;
+            case QuadraticEquationSolver:
                     screen = new EquationSolverScreen();
                 break;
-            case Graph:
-                    screen = new GraphScreen();
+            case QuadraticGraph:
+                    screen = new QuadraticEquationGraphScreen();
                 break;
+            case CosGraph:
+            		screen = new CosGraphScreen();
+            	break;
             case Settings:
                     screen = new SettingsScreen();
                 break;

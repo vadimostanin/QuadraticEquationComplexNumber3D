@@ -6,12 +6,12 @@ package com.vadimostanin.quadratic_complex;
 
 class GraphPointsManager
 {
-    private IGraphPointsGenerator mImParallelXGenerator;
-    private IGraphPointsGenerator mImSlopeXGenerator;
+    private IGraphPointsGenerator mCosImSlopeXGenerator;
+    private IGraphPointsGenerator mQuadraticImSlopeXGenerator;
     public GraphPointsManager( float a, float b, float c, float re, float im )
     {
-        mImParallelXGenerator = new GraphPointsImParalelXGenerator( a, b, c, im );
-        mImSlopeXGenerator = new GraphPointsImSlopeXGenerator( a, b, c, re, im );
+        mCosImSlopeXGenerator = new GraphPointsCosImSlopeXGenerator();
+        mQuadraticImSlopeXGenerator = new GraphPointsImSlopeXGenerator( a, b, c, re, im );
     }
 
     public void setSlope( float slopeDegrees )
@@ -26,11 +26,11 @@ class GraphPointsManager
 
         switch( type )
         {
-            case ImParallelX:
-                    result = mImParallelXGenerator;
+            case CosImSlopeX:
+                    result = mCosImSlopeXGenerator;
                 break;
-            case ImSlopeX:
-                    result = mImSlopeXGenerator;
+            case QuadraticImSlopeX:
+                    result = mQuadraticImSlopeXGenerator;
                 break;
         }
         return result;

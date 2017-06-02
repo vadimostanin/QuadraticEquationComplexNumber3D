@@ -19,18 +19,21 @@ public class InputMultiplexerManager
 		return mInstance;
 	}
 	
-	public void add( InputProcessor processor )
+	public InputMultiplexerManager add( InputProcessor processor )
 	{
 		mInputMultiolexer.getProcessors().add( processor );
+		return this;
 	}
 	
-	public void addFirst( InputProcessor processor )
+	public InputMultiplexerManager addFirst( InputProcessor processor )
 	{
 		mInputMultiolexer.addProcessor( 0, processor );
+		return this;
 	}
 	
-	public void remove( InputProcessor processor )
+	public InputMultiplexerManager remove( InputProcessor processor )
 	{
 		mInputMultiolexer.removeProcessor( processor );
+		return this;
 	}
 }

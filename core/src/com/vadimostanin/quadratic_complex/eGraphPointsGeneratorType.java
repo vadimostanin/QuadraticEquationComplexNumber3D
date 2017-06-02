@@ -6,6 +6,6 @@ package com.vadimostanin.quadratic_complex;
 
 public enum eGraphPointsGeneratorType
 {
-    ImParallelX,
-    ImSlopeX
+    QuadraticImSlopeX,
+    CosImSlopeX,
 }

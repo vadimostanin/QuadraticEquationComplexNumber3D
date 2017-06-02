@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
  * Created by vostanin on 4/13/17.
  */
 
-public class GraphInputData
+public class QuadraticGraphInputData
 {
     private float mA = 0.0f;
     private float mB = 0.0f;
@@ -14,7 +14,7 @@ public class GraphInputData
 
     private Complex mRoot = new Complex();
 
-    public GraphInputData( float a, float b, float c, Complex root )
+    public QuadraticGraphInputData( float a, float b, float c, Complex root )
     {
         mA = a;
         mB = b;

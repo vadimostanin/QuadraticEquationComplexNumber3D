@@ -253,7 +253,7 @@ public class EquationSolverScreen implements Screen, InputProcessor
 		{
 			final Table solutionTable = new Table();
 			final Complex solution = solutions.get( solution_i );
-            final GraphInputData graphInputData = new GraphInputData( quadSolver.getA(), quadSolver.getB(), quadSolver.getC(), solution );
+            final QuadraticGraphInputData graphInputData = new QuadraticGraphInputData( quadSolver.getA(), quadSolver.getB(), quadSolver.getC(), solution );
 			{
 				final String sNumber = String.format("%1$d)", solution_i + 1 );
 				final Label cLabel = new Label(sNumber, mSkin);
@@ -282,9 +282,9 @@ public class EquationSolverScreen implements Screen, InputProcessor
 					{
 						super.clicked( event, x, y );
 
-                        final GraphInputData graphInputData = (GraphInputData) solutionTable.getUserObject();
+                        final QuadraticGraphInputData graphInputData = (QuadraticGraphInputData) solutionTable.getUserObject();
 
-						final GraphScreen graphScreen = ( GraphScreen ) ScreensCache.getInstace().get( ScreensCache.eScreenType.Graph );
+						final QuadraticEquationGraphScreen graphScreen = ( QuadraticEquationGraphScreen ) ScreensCache.getInstace().get( ScreensCache.eScreenType.QuadraticGraph );
 						graphScreen.updateGraphInfo( graphInputData );
 						ScreensStack.getInstance().push( graphScreen );
 					}
