@@ -46,9 +46,9 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 
 	private Slider mSliderPointX;
 	private float mSlidedPointX = 0.0f;
-	private Slider mSliderOneGraphIm;
+//	private Slider mSliderOneGraphIm;
 	private Slider mSliderOneGraphXSlopeIm;
-	private float mSlidedOneGraphIm = 0.0f;
+//	private float mSlidedOneGraphIm = 0.0f;
 	private float mSlidedOneGraphXSlopeIm = 0.0f;
 	private Label mPointCoordinatesLabel;
 	private Label mPointXValueLabel;
@@ -83,10 +83,6 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		mDrawers.add( new GridDrawer() );
 		mGraphDrawer = new GraphDrawer();
 		mDrawers.add( mGraphDrawer );
-
-		batch = new SpriteBatch();
-		font = FontCache.getInstance().get( 30 );
-		font.setColor(Color.RED);
 	}
 
 	public void updateGraphInfo( QuadraticGraphInputData graphInputData )
@@ -98,7 +94,7 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		mSlidedPointX = ( float )mGraphInputData.getRoot().re();
 		mXSlope = ( float )( mGraphInputData.getRoot().re() / mGraphInputData.getRoot().im() );
 
-		mSlidedOneGraphIm = ( float ) mGraphInputData.getRoot().im();
+//		mSlidedOneGraphIm = ( float ) mGraphInputData.getRoot().im();
 
 		initCamera();
 		clearGUI();
@@ -424,8 +420,6 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 
 	private Vector3 mVectorPoint = new Vector3();
 	private BitmapFont font;
-	private SpriteBatch batch;
-	private Vector3 mLastVectorPoint = new Vector3();
 
 	@Override
 	public void render( float delta )

@@ -13,6 +13,7 @@ public abstract class IGraphPointsGenerator implements Iterable<GraphInfo>
     void generateRange(){}
 
     void getPoint( float re, float im, Vector3 result ){}
+    void getPointBySlope( float re, float slopeAngle, Vector3 result ){}
 
     void setSlope( float slope ){}
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -39,7 +40,14 @@ public class CosGraphScreen implements Screen, InputProcessor
 	private Slider mSliderPointX;
 	private Slider mSliderOneGraphXSlopeIm;
 	private float mSlidedOneGraphXSlopeIm = 0.0f;
+	private Label mPointXValueLabel;
+	private Label mPointYValueLabel;
 	private Label mSlopeXILabel;
+	private Label mPointCoordinatesLabel;
+
+	private float mSlidedPointX = 0.0f;
+	private Vector3 mVectorPoint = new Vector3();
+	private CosSolver mCosSolver = new CosSolver();
 
 	private GraphScreenUICreator mUiCreator;
 	private Matrix4 mRendererInitialMatrix = new Matrix4();
@@ -150,9 +158,21 @@ public class CosGraphScreen implements Screen, InputProcessor
 				@Override
 				public void changed(ChangeEvent event, Actor actor)
 				{
-//					Slider slider = (Slider) actor;
+					Slider slider = (Slider) actor;
 
-//					final float x_value = slider.getValue();
+					mSlidedPointX = slider.getValue();
+
+					final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
+					Complex yComplex = mCosSolver.getY( mSlidedPointX, im );
+					final String sCoords = String.format( "[%1$.2f x, %2$.2f y, %3$.2f i]",
+							mSlidedPointX, yComplex.re(), im + yComplex.im() );
+					mPointCoordinatesLabel.setText( sCoords );
+
+					final CharSequence sX = String.format( "X = %1$.2f %2$s %3$.2f i", mSlidedPointX, im < 0 ? "-" : "+", Math.abs( im ) );
+					mPointXValueLabel.setText( sX );
+
+					final CharSequence sY = String.format( "Y = %1$.2f %2$s %3$.2f i", yComplex.re(), yComplex.im() < 0 ? "-" : "+", Math.abs( yComplex.im() ) );
+					mPointYValueLabel.setText( sY );
 
 				}
 			});
@@ -190,6 +210,16 @@ public class CosGraphScreen implements Screen, InputProcessor
 
 					mComplexSlopeChangeProperty.set( slopeValue );
 					mComplexSlopeListeners.onChanged( mComplexSlopeChangeProperty );
+
+					final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
+
+					final CharSequence sX = String.format( "X = %1$.2f %2$s %3$.2f i", mSlidedPointX, im < 0 ? "-" : "+", Math.abs( im ) );
+					mPointXValueLabel.setText( sX );
+
+					Complex yComplex = mCosSolver.getY( mSlidedPointX, im );
+
+					final CharSequence sY = String.format( "Y = %1$.2f %2$s %3$.2f i", yComplex.re(), yComplex.im() < 0 ? "-" : "+", Math.abs( yComplex.im() ) );
+					mPointYValueLabel.setText( sY );
 
 					final String sLabel = String.format( "X%1$sI = %2$.1f%3$s", Constants.SymbolAngle, slopeValue, Constants.SymbolDegree );
 					mSlopeXILabel.setText( sLabel );
@@ -233,6 +263,41 @@ public class CosGraphScreen implements Screen, InputProcessor
 			legendLabelX.setStyle(titleStyle);
 
 			legendTable.add( legendLabelX ).align( Align.right );
+		}
+		legendTable.row();
+		{
+			final float im = (float)0.0f;
+			final CharSequence sX = String.format( "X = %1$.2f %2$s %3$.2f i", mSlidedPointX, im < 0 ? "-" : "+", Math.abs( im ) );
+			mPointXValueLabel = new Label( sX, mSkin );
+			final BitmapFont font = FontCache.getInstance().get( 20 );
+			final Label.LabelStyle titleStyle = new Label.LabelStyle(font, Color.BLACK);
+			mPointXValueLabel.setStyle(titleStyle);
+
+			legendTable.add( mPointXValueLabel ).align( Align.right );
+		}
+		legendTable.row();
+		{
+			final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
+			final Complex cY = mCosSolver.getY( mSlidedPointX, im );
+			final CharSequence sY = String.format( "Y = %1$.2f %2$s %3$.2f i", cY.re(), cY.im() < 0 ? "-" : "+", Math.abs( cY.im() ) );
+			mPointYValueLabel = new Label( sY, mSkin );
+			final BitmapFont font = FontCache.getInstance().get( 20 );
+			final Label.LabelStyle titleStyle = new Label.LabelStyle(font, Color.BLACK);
+			mPointYValueLabel.setStyle(titleStyle);
+
+			legendTable.add( mPointYValueLabel ).align( Align.right );
+		}
+		legendTable.row();
+		{
+			final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
+			final Complex cY = mCosSolver.getY( mSlidedPointX, im );
+			final CharSequence sCoords = String.format( "[%1$.2f x, %2$.2f y, %3$.2f i]", mSlidedPointX, cY.re(), im + cY.im() );
+			mPointCoordinatesLabel = new Label(sCoords, mSkin);
+			final BitmapFont font = FontCache.getInstance().get( 20 );
+			final Label.LabelStyle titleStyle = new Label.LabelStyle( font, Color.BLACK );
+			mPointCoordinatesLabel.setStyle(titleStyle);
+
+			legendTable.add( mPointCoordinatesLabel ).align( Align.right );
 		}
 		legendTable.row();
 		{
@@ -316,7 +381,6 @@ public class CosGraphScreen implements Screen, InputProcessor
 		InputMultiplexerManager.getInstance().remove( this ).remove( cameraInput ).remove( mStage );
 	}
 
-
 	@Override
 	public void render( float delta )
 	{
@@ -326,6 +390,13 @@ public class CosGraphScreen implements Screen, InputProcessor
 		renderer.setProjectionMatrix( camera.combined );
 		renderer.begin(ShapeType.Filled);
 		renderer.setColor( Color.BLUE );
+
+		mGraphPointsGeneratorManager.getGenerator().setSlope( mSlidedOneGraphXSlopeIm );
+		mGraphPointsGeneratorManager.getGenerator().getPoint( mSlidedPointX, 0.0f, mVectorPoint );
+
+		final float boxDimension = 0.05f;
+
+		renderer.box( mVectorPoint.x, mVectorPoint.y, mVectorPoint.z, boxDimension, boxDimension, boxDimension );
 
 		renderer.end();
 
@@ -337,6 +408,7 @@ public class CosGraphScreen implements Screen, InputProcessor
 
 		renderer.setProjectionMatrix( mRendererInitialMatrix );
 		drawGraphLegend();
+
 
 //		batch.setProjectionMatrix( camera.combined );
 //		batch.begin();

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -35,7 +36,7 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 	private Table mTable;
 	private Skin mSkin;
 	private SelectBox mFunctionSelectBox;
-	private VisSelectBox<String> mFunctionVisSelectBox;
+//	private VisSelectBox<String> mFunctionVisSelectBox;
 	private FunctionsCache mFunctionsCache = new FunctionsCache();
 
 	public FunctionChooseScreen() {
@@ -102,26 +103,25 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 
 	private void createUI()
 	{
-		mFunctionVisSelectBox = new VisSelectBox<String>();
-		mFunctionVisSelectBox.setItems( new String[] { "Quadratic A*X^2 + B * X + C = 0", "Cos(Z)|Z = X + i*Y" } );
-		mFunctionVisSelectBox.addListener( new ChangeListener()
-		{
-			@Override
-			public void changed( ChangeEvent event, Actor actor )
-			{
-				
-			}
-		});
+//		mFunctionVisSelectBox = new VisSelectBox<String>();
+//		mFunctionVisSelectBox.setItems( new String[] { "Quadratic A*X^2 + B * X + C = 0", "Cos(Z)|Z = X + i*Y" } );
+//		mFunctionVisSelectBox.addListener( new ChangeListener()
+//		{
+//			@Override
+//			public void changed( ChangeEvent event, Actor actor )
+//			{
+//
+//			}
+//		});
 
 		// SelectBoxStyle style = new SelectBoxStyle();
 
-		// mFunctionSelectBox = new SelectBox<String>( mSkin );
-		// mFunctionSelectBox.setItems(new String[] {"Quadratic A*X^2 + B * X +
-		// C = 0", "Cos(Z)|Z = X + i*Y"});
+		mFunctionSelectBox = new SelectBox<String>( mSkin );
+		mFunctionSelectBox.setItems(new String[] {"Quadratic A*X^2 + B * X + C = 0", "Cos(Z)|Z = X + i*Y"});
 
-		mTable.add(mFunctionVisSelectBox).fillX();// gro width( 300 );
+		mTable.add(mFunctionSelectBox).fillX();// gro width( 300 );
 		
-		final VisTextButton nextButton = new VisTextButton( "Next" );
+		final TextButton nextButton = new TextButton( "Next", mSkin );
 		nextButton.addListener( new ClickListener()
 		{
 			@Override
@@ -129,7 +129,7 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 			{
 				super.clicked( event, x, y );
 
-				final int selectedIndex = mFunctionVisSelectBox.getSelectedIndex();
+				final int selectedIndex = mFunctionSelectBox.getSelectedIndex();
 				mFunctionsCache.execute( selectedIndex, null );
 			}
 		});
@@ -146,7 +146,7 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 	@Override
 	public void render( float delta )
 	{
-		Gdx.gl.glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+		Gdx.gl.glClearColor( 0.9f, 0.9f, 0.9f, 1.0f );
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		mStage.act();
@@ -184,8 +184,14 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 	}
 
 	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+	public boolean keyDown( int keycode )
+	{
+		if( keycode == Input.Keys.BACK || keycode == Input.Keys.ESCAPE )
+		{
+			ScreensStack.getInstance().pop();
+
+			return true;
+		}
 		return false;
 	}
 
