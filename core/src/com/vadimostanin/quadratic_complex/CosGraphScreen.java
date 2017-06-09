@@ -76,7 +76,8 @@ public class CosGraphScreen implements Screen, InputProcessor
 
 	public void updateGraphInfo( CosGraphInputData graphInputData )
 	{
-		mGraphPointsGeneratorManager = new GraphPointsManager( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f );
+		mGraphPointsGeneratorManager = new GraphPointsManager();
+		mGraphPointsGeneratorManager.createCosPointGenerator();
 
 		initCamera();
 		clearGUI();

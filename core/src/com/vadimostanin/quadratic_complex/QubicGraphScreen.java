@@ -1,6 +1,5 @@
 package com.vadimostanin.quadratic_complex;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,25 +15,20 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 
-public class QuadraticEquationGraphScreen implements Screen, InputProcessor
+public class QubicGraphScreen implements Screen, InputProcessor
 {
-
 	private PerspectiveCamera camera;
 	private CameraInputController cameraInput;
 	private ShapeRenderer renderer;
@@ -45,31 +38,27 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 	private Skin mSkin;
 
 	private Slider mSliderPointX;
-	private float mSlidedPointX = 0.0f;
-//	private Slider mSliderOneGraphIm;
 	private Slider mSliderOneGraphXSlopeIm;
-//	private float mSlidedOneGraphIm = 0.0f;
 	private float mSlidedOneGraphXSlopeIm = 0.0f;
-	private Label mPointCoordinatesLabel;
 	private Label mPointXValueLabel;
 	private Label mPointYValueLabel;
 	private Label mSlopeXILabel;
+	private Label mPointCoordinatesLabel;
 
-	private QuadraticGraphInputData mGraphInputData;
-	private float mXSlope;
+	private float mSlidedPointX = 0.0f;
+	private Vector3 mVectorPoint = new Vector3();
+	private CosSolver mCosSolver = new CosSolver();
 
 	private GraphScreenUICreator mUiCreator;
-	private QuadraticSolver mQuadraticSolver;
 	private Matrix4 mRendererInitialMatrix = new Matrix4();
 
 	private Array<IDrawShapeRenderer> mDrawers = new Array<IDrawShapeRenderer>();
 	private GraphPointsManager mGraphPointsGeneratorManager;
 	private GraphDrawer mGraphDrawer;
-	private Vector3 mTempVector = new Vector3();
 	private PropertyChangeListeners mComplexSlopeListeners = new PropertyChangeListeners();
 	private ComplexSlopeChangeProperty mComplexSlopeChangeProperty = new ComplexSlopeChangeProperty();
 
-	public QuadraticEquationGraphScreen()
+	public QubicGraphScreen()
 	{
 		renderer = new ShapeRenderer();
 		mRendererInitialMatrix.set( renderer.getProjectionMatrix() );
@@ -77,25 +66,18 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		initGUI();
 
 		mDrawers.add( new AxisDrawer() );
-		final QuazyXAxisDrawer drawer = new QuazyXAxisDrawer();
-		mComplexSlopeListeners.add( drawer );
-		mDrawers.add( drawer );
+//		final QuazyXAxisDrawer drawer = new QuazyXAxisDrawer();
+//		mComplexSlopeListeners.add( drawer );
+//		mDrawers.add( drawer );
 		mDrawers.add( new GridDrawer() );
 		mGraphDrawer = new GraphDrawer();
 		mDrawers.add( mGraphDrawer );
 	}
 
-	public void updateGraphInfo( QuadraticGraphInputData graphInputData )
+	public void updateGraphInfo( QubicGraphInputData graphInputData )
 	{
-		mGraphInputData = graphInputData;
-		mQuadraticSolver = new QuadraticSolver( mGraphInputData.getA(), mGraphInputData.getB(), mGraphInputData.getC() );
 		mGraphPointsGeneratorManager = new GraphPointsManager();
-		mGraphPointsGeneratorManager.createQuadraticPointGenerator( mGraphInputData.getA(), mGraphInputData.getB(), mGraphInputData.getC(), (float)mGraphInputData.getRoot().re(), (float)mGraphInputData.getRoot().im() );
-
-		mSlidedPointX = ( float )mGraphInputData.getRoot().re();
-		mXSlope = ( float )( mGraphInputData.getRoot().re() / mGraphInputData.getRoot().im() );
-
-//		mSlidedOneGraphIm = ( float ) mGraphInputData.getRoot().im();
+		mGraphPointsGeneratorManager.createCosPointGenerator();
 
 		initCamera();
 		clearGUI();
@@ -171,7 +153,7 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 
 			mSliderPointX = new Slider( Settings.getInstance().getGraphXMin(), Settings.getInstance().getGraphXMax(), Settings.getInstance().getGraphXDelta(), true, mSkin );
 
-			mSliderPointX.setValue( mSlidedPointX );
+			mSliderPointX.setValue( 0.0f/*mSlidedPointX*/ );
 			mSliderPointX.addListener(new ChangeListener() {
 
 				@Override
@@ -179,12 +161,10 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 				{
 					Slider slider = (Slider) actor;
 
-					final float x_value = slider.getValue();
-					mSlidedPointX = x_value;
-					final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
-					Complex yComplex = mQuadraticSolver.getY( mSlidedPointX, im );
-//					mGraphPointsGeneratorManager.getGenerator().getPoint( mSlidedPointX, mSlidedOneGraphIm, mTempVector );
+					mSlidedPointX = slider.getValue();
 
+					final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
+					Complex yComplex = mCosSolver.getY( mSlidedPointX, im );
 					final String sCoords = String.format( "[%1$.2f x, %2$.2f y, %3$.2f i]",
 							mSlidedPointX, yComplex.re(), im + yComplex.im() );
 					mPointCoordinatesLabel.setText( sCoords );
@@ -194,6 +174,7 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 
 					final CharSequence sY = String.format( "Y = %1$.2f %2$s %3$.2f i", yComplex.re(), yComplex.im() < 0 ? "-" : "+", Math.abs( yComplex.im() ) );
 					mPointYValueLabel.setText( sY );
+
 				}
 			});
 			sliderTable.add( mSliderPointX ).width( Gdx.graphics.getWidth() * 0.1f ).height( Gdx.graphics.getHeight() * 0.4f ).align( Align.left );
@@ -208,10 +189,10 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 			sliderTable.add( sliderTitle ).align( Align.left );
 			sliderTable.row();
 
-			mSliderOneGraphXSlopeIm = new Slider( 0.0f, 360.0f, 0.1f, true, mSkin );
+			mSliderOneGraphXSlopeIm = new Slider( 0.0f, 180.0f, 0.05f, true, mSkin );
 //			mSliderOneGraphXSlopeIm = new Slider( 89.999f, 90.001f, 0.00001f, true, mSkin );
 
-			final float slope = MyUtils.recalcSlopeAngle( ( float ) mGraphInputData.getRoot().re(), ( float ) mGraphInputData.getRoot().im() );
+			final float slope = 0.0f;//MyUtils.recalcSlopeAngle( ( float ) mGraphInputData.getRoot().re(), ( float ) mGraphInputData.getRoot().im() );
 			mSliderOneGraphXSlopeIm.setValue( slope );
 			mComplexSlopeChangeProperty.set( slope );
 			mComplexSlopeListeners.onChanged( mComplexSlopeChangeProperty );
@@ -228,27 +209,21 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 					mGraphPointsGeneratorManager.setSlope( mSlidedOneGraphXSlopeIm );
 					mGraphPointsGeneratorManager.getGenerator().generateOne();
 
-					final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
-					Complex yComplex = mQuadraticSolver.getY( mSlidedPointX, im );
-//					mSlidedPointX = 0.000001f;
+					mComplexSlopeChangeProperty.set( slopeValue );
+					mComplexSlopeListeners.onChanged( mComplexSlopeChangeProperty );
 
-					mGraphPointsGeneratorManager.getGenerator().getPoint( mSlidedPointX, 0.0f, mTempVector );
+					final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
 
 					final CharSequence sX = String.format( "X = %1$.2f %2$s %3$.2f i", mSlidedPointX, im < 0 ? "-" : "+", Math.abs( im ) );
 					mPointXValueLabel.setText( sX );
 
+					Complex yComplex = mCosSolver.getY( mSlidedPointX, im );
+
 					final CharSequence sY = String.format( "Y = %1$.2f %2$s %3$.2f i", yComplex.re(), yComplex.im() < 0 ? "-" : "+", Math.abs( yComplex.im() ) );
 					mPointYValueLabel.setText( sY );
 
-					final String sCoords = String.format( "[%1$.2f x, %2$.2f y, %3$.2f i]",
-							mSlidedPointX, yComplex.re(), im + yComplex.im() );
-					mPointCoordinatesLabel.setText( sCoords );
-
 					final String sLabel = String.format( "X%1$sI = %2$.1f%3$s", Constants.SymbolAngle, slopeValue, Constants.SymbolDegree );
 					mSlopeXILabel.setText( sLabel );
-
-					mComplexSlopeChangeProperty.set( slopeValue );
-					mComplexSlopeListeners.onChanged( mComplexSlopeChangeProperty );
 				}
 			});
 			sliderTable.add( mSliderOneGraphXSlopeIm ).width( Gdx.graphics.getWidth() * 0.1f ).height( Gdx.graphics.getHeight() * 0.4f ).align( Align.left );
@@ -292,7 +267,7 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		}
 		legendTable.row();
 		{
-			final float im = (float)mGraphInputData.getRoot().im();
+			final float im = (float)0.0f;
 			final CharSequence sX = String.format( "X = %1$.2f %2$s %3$.2f i", mSlidedPointX, im < 0 ? "-" : "+", Math.abs( im ) );
 			mPointXValueLabel = new Label( sX, mSkin );
 			final BitmapFont font = FontCache.getInstance().get( 20 );
@@ -303,8 +278,8 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		}
 		legendTable.row();
 		{
-			final float im = (float)mGraphInputData.getRoot().im();
-			final Complex cY = mQuadraticSolver.getY( mSlidedPointX, im );
+			final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
+			final Complex cY = mCosSolver.getY( mSlidedPointX, im );
 			final CharSequence sY = String.format( "Y = %1$.2f %2$s %3$.2f i", cY.re(), cY.im() < 0 ? "-" : "+", Math.abs( cY.im() ) );
 			mPointYValueLabel = new Label( sY, mSkin );
 			final BitmapFont font = FontCache.getInstance().get( 20 );
@@ -315,8 +290,8 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		}
 		legendTable.row();
 		{
-			final float im = (float)mGraphInputData.getRoot().im();
-			final Complex cY = mQuadraticSolver.getY( mSlidedPointX, im );
+			final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
+			final Complex cY = mCosSolver.getY( mSlidedPointX, im );
 			final CharSequence sCoords = String.format( "[%1$.2f x, %2$.2f y, %3$.2f i]", mSlidedPointX, cY.re(), im + cY.im() );
 			mPointCoordinatesLabel = new Label(sCoords, mSkin);
 			final BitmapFont font = FontCache.getInstance().get( 20 );
@@ -327,7 +302,7 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		}
 		legendTable.row();
 		{
-			final float slope = MyUtils.recalcSlopeAngle( ( float ) mGraphInputData.getRoot().re(), ( float ) mGraphInputData.getRoot().im() );
+			final float slope = 0.0f;
 			final CharSequence sLabel = String.format( "X%1$sI = %2$.1f%3$s", Constants.SymbolAngle, slope, Constants.SymbolDegree );
 			mSlopeXILabel = new Label( sLabel, mSkin );
 			final BitmapFont font = FontCache.getInstance().get( 20 );
@@ -396,31 +371,16 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 	@Override
 	public void show()
 	{
-		InputMultiplexerManager.getInstance().add( mStage );
-		InputMultiplexerManager.getInstance().add( this );
-		InputMultiplexerManager.getInstance().add( cameraInput );
-
-        switch( Settings.getInstance().getGraphScreenState() )
-        {
-            case eShowOneGraph:
-                    mGraphPointsGeneratorManager.getGenerator().generateOne();
-                break;
-            case eShowGraphsRange:
-                    mGraphPointsGeneratorManager.getGenerator().generateRange();
-                break;
-        }
+		InputMultiplexerManager.getInstance().add( mStage ).add( this ).add( cameraInput );
+		
+		mGraphPointsGeneratorManager.getGenerator().generateOne();
 	}
 
 	@Override
 	public void hide()
 	{
-		InputMultiplexerManager.getInstance().remove( this );
-		InputMultiplexerManager.getInstance().remove( cameraInput );
-		InputMultiplexerManager.getInstance().remove( mStage );
+		InputMultiplexerManager.getInstance().remove( this ).remove( cameraInput ).remove( mStage );
 	}
-
-	private Vector3 mVectorPoint = new Vector3();
-	private BitmapFont font;
 
 	@Override
 	public void render( float delta )
@@ -428,22 +388,14 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 		Gdx.gl.glClearColor( 1, 1, 1, 1 );
 		Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 		
-//		Gdx.gl.glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );
-
 		renderer.setProjectionMatrix( camera.combined );
 		renderer.begin(ShapeType.Filled);
 		renderer.setColor( Color.BLUE );
-//		final float xSlope = ( float )( mGraphInputData.getRoot().re() / mGraphInputData.getRoot().im() );
-//		final Complex yComplex = mQuadraticSolver.getY( mXPoint, (float)( mGraphInputData.getRoot().im() ) );
-		final float Im = mSlidedPointX / mXSlope;
-		final Complex yComplex = mQuadraticSolver.getY( mSlidedPointX, Im );
+
+		mGraphPointsGeneratorManager.getGenerator().setSlope( mSlidedOneGraphXSlopeIm );
+		mGraphPointsGeneratorManager.getGenerator().getPoint( mSlidedPointX, 0.0f, mVectorPoint );
+
 		final float boxDimension = 0.05f;
-		// renderer.box( mXPoint, (float)( yComplex.re() ), (float)( yComplex.im() + mGraphInputData.getRoot().im() ), boxDimension, boxDimension, boxDimension );
-//		renderer.box( mXPoint, (float)( yComplex.re() ), (float)( yComplex.im() + Im ), boxDimension, boxDimension, boxDimension );
-
-
-		mGraphPointsGeneratorManager.getGenerator().getPoint( mSlidedPointX, ( float ) mGraphInputData.getRoot().im(), mVectorPoint );
-
 
 		renderer.box( mVectorPoint.x, mVectorPoint.y, mVectorPoint.z, boxDimension, boxDimension, boxDimension );
 
@@ -457,6 +409,7 @@ public class QuadraticEquationGraphScreen implements Screen, InputProcessor
 
 		renderer.setProjectionMatrix( mRendererInitialMatrix );
 		drawGraphLegend();
+
 
 //		batch.setProjectionMatrix( camera.combined );
 //		batch.begin();

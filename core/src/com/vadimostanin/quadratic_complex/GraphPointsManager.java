@@ -8,10 +8,25 @@ class GraphPointsManager
 {
     private IGraphPointsGenerator mCosImSlopeXGenerator;
     private IGraphPointsGenerator mQuadraticImSlopeXGenerator;
-    public GraphPointsManager( float a, float b, float c, float re, float im )
+    private IGraphPointsGenerator mQubicImSlopeXGenerator;
+    public GraphPointsManager()
     {
-        mCosImSlopeXGenerator = new GraphPointsCosImSlopeXGenerator();
-        mQuadraticImSlopeXGenerator = new GraphPointsImSlopeXGenerator( a, b, c, re, im );
+        ;
+    }
+    
+    public void createQuadraticPointGenerator( float a, float b, float c, float re, float im )
+    {
+    	mQuadraticImSlopeXGenerator = new GraphPointsImSlopeXGenerator( a, b, c, re, im );
+    }
+    
+    public void createCosPointGenerator()
+    {
+    	mCosImSlopeXGenerator = new GraphPointsCosImSlopeXGenerator();
+    }
+    
+    public void createQubicPointGenerator( float a, float b, float c, float d )
+    {
+    	mQubicImSlopeXGenerator = new GraphPointsQubicImSlopeXGenerator( a, b, c, d );
     }
 
     public void setSlope( float slopeDegrees )
@@ -32,6 +47,9 @@ class GraphPointsManager
             case QuadraticImSlopeX:
                     result = mQuadraticImSlopeXGenerator;
                 break;
+            case QubicImSlopeX:
+            		result = mQubicImSlopeXGenerator;
+            	break;
         }
         return result;
     }

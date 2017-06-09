@@ -1,6 +1,5 @@
 package com.vadimostanin.quadratic_complex;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,17 +11,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -35,7 +30,7 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 	private Stage mStage;
 	private Table mTable;
 	private Skin mSkin;
-	private SelectBox mFunctionSelectBox;
+	private SelectBox<String> mFunctionSelectBox;
 //	private VisSelectBox<String> mFunctionVisSelectBox;
 	private FunctionsCache mFunctionsCache = new FunctionsCache();
 
@@ -71,8 +66,17 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 				Settings.getInstance().setGraphPointsGeneratorType(eGraphPointsGeneratorType.QuadraticImSlopeX);
 			}
 		});
-		
 		mFunctionsCache.add( 1, new IFunction()
+		{
+			@Override
+			public void execute( Object... o )
+			{
+				ScreensStack.getInstance().push( ( QubicEquationSolverScreen ) ScreensCache.getInstace().get( eScreenType.QubicEquationSolver ) );
+				Settings.getInstance().setGraphPointsGeneratorType(eGraphPointsGeneratorType.QubicImSlopeX);
+				
+			}
+		});		
+		mFunctionsCache.add( 2, new IFunction()
 		{
 			@Override
 			public void execute( Object... o )
@@ -117,7 +121,7 @@ public class FunctionChooseScreen implements Screen, InputProcessor {
 		// SelectBoxStyle style = new SelectBoxStyle();
 
 		mFunctionSelectBox = new SelectBox<String>( mSkin );
-		mFunctionSelectBox.setItems(new String[] {"Quadratic A*X^2 + B * X + C = 0", "Cos(Z)|Z = X + i*Y"});
+		mFunctionSelectBox.setItems(new String[] {"Quadratic A*X^2 + B * X + C = 0", "Qubic A*X^3 + B * X^2 + C * X + D = 0", "Cos(Z)|Z = X + i*Y"});
 
 		mTable.add(mFunctionSelectBox).fillX();// gro width( 300 );
 		

@@ -16,6 +16,8 @@ public class ScreensCache
     	FunctionChoose,
     	QuadraticEquationSolver,
         QuadraticGraph,
+        QubicEquationSolver,
+        QubicGraph,
         CosGraph,
         Settings,
     }
@@ -41,11 +43,17 @@ public class ScreensCache
         			screen = new FunctionChooseScreen();
         		break;
             case QuadraticEquationSolver:
-                    screen = new EquationSolverScreen();
+                    screen = new QuadraticEquationSolverScreen();
                 break;
             case QuadraticGraph:
                     screen = new QuadraticEquationGraphScreen();
                 break;
+            case QubicEquationSolver:
+            		screen = new QubicEquationSolverScreen();
+            	break;
+            case QubicGraph:
+            		screen = new QubicGraphScreen();
+            	break;
             case CosGraph:
             		screen = new CosGraphScreen();
             	break;

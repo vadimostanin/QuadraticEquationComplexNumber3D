@@ -24,18 +24,19 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-public class EquationSolverScreen implements Screen, InputProcessor
+public class QubicEquationSolverScreen implements Screen, InputProcessor
 {
 	private Stage mStage;
 	private Table mTable;
 	private Skin  mSkin;
 	private Table mSolveTable;
+	private TextField mX3Text;
 	private TextField mX2Text;
 	private TextField mXText;
 	private TextField mCText;
 	private ScrollPane mTableScroll;
 	
-	public EquationSolverScreen()
+	public QubicEquationSolverScreen()
 	{
 //		ScreenOrientation.getInstance().changeMode( eScreenOrientation.PORTRAIT );
 //		ScreenOrientation.getInstance().changeMode( eScreenOrientation.LANSCAPE );
@@ -124,7 +125,7 @@ public class EquationSolverScreen implements Screen, InputProcessor
 	
 	private void createUITitle()
 	{
-		final String sTitle = "Quadratic equation solver \nwith Complex number support";
+		final String sTitle = "Qubic equation solver \nwith Complex number support";
 		final BitmapFont font = FontCache.getInstance().get( 20 );
 
 		Label title = new Label( sTitle, mSkin );
@@ -138,6 +139,32 @@ public class EquationSolverScreen implements Screen, InputProcessor
 	{
 		final Table equationTable = new Table();
 		equationTable.align( Align.top );
+		{
+			{
+				mX2Text = new TextField("1.0", mSkin);
+				final BitmapFont font = FontCache.getInstance().get(30);
+				final TextField.TextFieldStyle prevStyle = mX2Text.getStyle();
+				final TextField.TextFieldStyle titleStyle = new TextField.TextFieldStyle(font, Color.WHITE, prevStyle.cursor, prevStyle.selection, prevStyle.background);
+				mX2Text.setStyle(titleStyle);
+				equationTable.add(mX2Text).width( 70 );
+
+				mX2Text.setTextFieldFilter( new EquationTextFilter() );
+			}
+			{
+				final Label x2Label = new Label(" * X^3", mSkin);
+				final BitmapFont font = FontCache.getInstance().get(30);
+				final Label.LabelStyle titleStyle = new Label.LabelStyle(font, Color.BLACK);
+				x2Label.setStyle(titleStyle);
+				equationTable.add( x2Label ).expand();
+			}
+			{
+				final Label x2PlusLabel = new Label(" + ", mSkin);
+				final BitmapFont font = FontCache.getInstance().get(30);
+				final Label.LabelStyle titleStyle = new Label.LabelStyle(font, Color.BLACK);
+				x2PlusLabel.setStyle(titleStyle);
+				equationTable.add(x2PlusLabel);
+			}
+		}
 		{
 			{
 				mX2Text = new TextField("1.0", mSkin);
@@ -218,11 +245,12 @@ public class EquationSolverScreen implements Screen, InputProcessor
 				{
 					super.clicked( event, x, y );
 					try {
-						final float mA = Float.parseFloat(mX2Text.getText());
-						final float mB = Float.parseFloat(mXText.getText());
-						final float mC = Float.parseFloat(mCText.getText());
-						final QuadraticSolver quadSolver = new QuadraticSolver(mA, mB, mC);
-						fillSolvedTable(quadSolver);
+						final float mA = Float.parseFloat(mX3Text.getText());
+						final float mB = Float.parseFloat(mX2Text.getText());
+						final float mC = Float.parseFloat(mXText.getText());
+						final float mD = Float.parseFloat(mCText.getText());
+						final QubicEquationSolver quadSolver = new QubicEquationSolver( mA, mB, mC, mD );
+						fillSolvedTable( quadSolver );
 					}
 					catch( Exception e )
 					{
@@ -243,17 +271,17 @@ public class EquationSolverScreen implements Screen, InputProcessor
 		mTable.add( mSolveTable ).align( Align.left );
 	}
 
-	private void fillSolvedTable( final QuadraticSolver quadSolver )
+	private void fillSolvedTable( final QubicEquationSolver solver )
 	{
 		mSolveTable.clear();
 
-		Array<Complex> solutions = quadSolver.solve();
+		Array<Complex> solutions = solver.solve();
 
 		for( int solution_i = 0 ; solution_i < solutions.size ; solution_i ++ )
 		{
 			final Table solutionTable = new Table();
 			final Complex solution = solutions.get( solution_i );
-            final QuadraticGraphInputData graphInputData = new QuadraticGraphInputData( quadSolver.getA(), quadSolver.getB(), quadSolver.getC(), solution );
+            final QubicGraphInputData graphInputData = new QubicGraphInputData( solver.getA(), solver.getB(), solver.getC(), solver.getD(), solution );
 			{
 				final String sNumber = String.format("%1$d)", solution_i + 1 );
 				final Label cLabel = new Label(sNumber, mSkin);
@@ -282,9 +310,9 @@ public class EquationSolverScreen implements Screen, InputProcessor
 					{
 						super.clicked( event, x, y );
 
-                        final QuadraticGraphInputData graphInputData = (QuadraticGraphInputData) solutionTable.getUserObject();
+                        final QubicGraphInputData graphInputData = ( QubicGraphInputData ) solutionTable.getUserObject();
 
-						final QuadraticEquationGraphScreen graphScreen = ( QuadraticEquationGraphScreen ) ScreensCache.getInstace().get( ScreensCache.eScreenType.QuadraticGraph );
+						final QubicGraphScreen graphScreen = ( QubicGraphScreen ) ScreensCache.getInstace().get( ScreensCache.eScreenType.QubicGraph );
 						graphScreen.updateGraphInfo( graphInputData );
 						ScreensStack.getInstance().push( graphScreen );
 					}

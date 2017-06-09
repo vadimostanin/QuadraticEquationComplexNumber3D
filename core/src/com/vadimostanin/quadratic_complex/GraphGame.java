@@ -10,6 +10,8 @@ public class GraphGame extends Game
 	@Override
 	public void create()
 	{
+//		final QubicEquationSolver solver = new QubicEquationSolver( 1, 1, 1, 1 );
+//		Complex y = solver.getY( 1, 2 );
 		VisUI.load();
 		final Screen screen = ScreensCache.getInstace().get( ScreensCache.eScreenType.FunctionChoose );
 
