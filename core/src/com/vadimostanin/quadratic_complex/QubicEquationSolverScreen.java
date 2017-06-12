@@ -141,14 +141,14 @@ public class QubicEquationSolverScreen implements Screen, InputProcessor
 		equationTable.align( Align.top );
 		{
 			{
-				mX2Text = new TextField("1.0", mSkin);
+				mX3Text = new TextField("1.0", mSkin);
 				final BitmapFont font = FontCache.getInstance().get(30);
-				final TextField.TextFieldStyle prevStyle = mX2Text.getStyle();
+				final TextField.TextFieldStyle prevStyle = mX3Text.getStyle();
 				final TextField.TextFieldStyle titleStyle = new TextField.TextFieldStyle(font, Color.WHITE, prevStyle.cursor, prevStyle.selection, prevStyle.background);
-				mX2Text.setStyle(titleStyle);
-				equationTable.add(mX2Text).width( 70 );
+				mX3Text.setStyle(titleStyle);
+				equationTable.add(mX3Text).width( 70 );
 
-				mX2Text.setTextFieldFilter( new EquationTextFilter() );
+				mX3Text.setTextFieldFilter( new EquationTextFilter() );
 			}
 			{
 				final Label x2Label = new Label(" * X^3", mSkin);
@@ -303,8 +303,8 @@ public class QubicEquationSolverScreen implements Screen, InputProcessor
 			solutionTable.row();
 
 			{
-				final Button solveBtn = new TextButton( "3D Graph", mSkin );
-				solveBtn.addListener( new ClickListener() {
+				final Button graphBtn = new TextButton( "3D Graph", mSkin );
+				graphBtn.addListener( new ClickListener() {
 					@Override
 					public void clicked( InputEvent event, float x, float y )
 					{
@@ -317,7 +317,7 @@ public class QubicEquationSolverScreen implements Screen, InputProcessor
 						ScreensStack.getInstance().push( graphScreen );
 					}
 				});
-				solutionTable.add(  solveBtn ).expandY().fillX().height( Gdx.graphics.getHeight() * 0.05f ).align( Align.center );
+				solutionTable.add(  graphBtn ).expandY().fillX().height( Gdx.graphics.getHeight() * 0.05f ).align( Align.center );
 
 			}
 			solutionTable.setUserObject( graphInputData );

@@ -77,7 +77,7 @@ public class QubicGraphScreen implements Screen, InputProcessor
 	public void updateGraphInfo( QubicGraphInputData graphInputData )
 	{
 		mGraphPointsGeneratorManager = new GraphPointsManager();
-		mGraphPointsGeneratorManager.createCosPointGenerator();
+		mGraphPointsGeneratorManager.createQubicPointGenerator( graphInputData.getA(), graphInputData.getB(), graphInputData.getC(), graphInputData.getD() );
 
 		initCamera();
 		clearGUI();
