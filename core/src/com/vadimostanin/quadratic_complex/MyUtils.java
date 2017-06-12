@@ -9,10 +9,18 @@ public class MyUtils
     static float recalcSlopeAngle( double Re, double Im )
     {
         final float hypot = ( float ) Math.sqrt( Re * Re + Im * Im );
-        final double cosValue = Re / hypot;
-        final double sinValue = Im / hypot;
-
-        final float cosAngle = ( float ) Math.toDegrees( Math.acos( cosValue ) );
+        double cosValue = Re / hypot;
+        double sinValue = Im / hypot;
+        if( cosValue > 1.0 )
+        {
+            cosValue = 1.0;
+        }
+        if( sinValue > 1.0 )
+        {
+            sinValue = 1.0;
+        }
+        final double acos  = Math.acos( cosValue );
+        final float cosAngle = ( float ) Math.toDegrees( acos );
         if( sinValue <= 0.0f )
         {
             return 360.0f - cosAngle;
