@@ -1,18 +1,16 @@
 package com.vadimostanin.quadratic_complex;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * Created by vostanin on 4/24/17.
  */
 
 public class MyUtils
 {
-    static float recalcSlopeAngle( float Re, float Im )
+    static float recalcSlopeAngle( double Re, double Im )
     {
         final float hypot = ( float ) Math.sqrt( Re * Re + Im * Im );
-        final float cosValue = Re / hypot;
-        final float sinValue = Im / hypot;
+        final double cosValue = Re / hypot;
+        final double sinValue = Im / hypot;
 
         final float cosAngle = ( float ) Math.toDegrees( Math.acos( cosValue ) );
         if( sinValue <= 0.0f )

@@ -78,7 +78,10 @@ public class QubicGraphScreen implements Screen, InputProcessor
 	{
 		mGraphPointsGeneratorManager = new GraphPointsManager();
 		mGraphPointsGeneratorManager.createQubicPointGenerator( graphInputData.getA(), graphInputData.getB(), graphInputData.getC(), graphInputData.getD() );
-
+		mSlidedOneGraphXSlopeIm = ( float )MyUtils.recalcSlopeAngle( graphInputData.getRoot().re(), graphInputData.getRoot().im() );
+		mGraphPointsGeneratorManager.getGenerator().setSlope( mSlidedOneGraphXSlopeIm );
+		mSlidedPointX = ( float )graphInputData.getRoot().re();
+		
 		initCamera();
 		clearGUI();
 		fillGUI();
@@ -153,7 +156,7 @@ public class QubicGraphScreen implements Screen, InputProcessor
 
 			mSliderPointX = new Slider( Settings.getInstance().getGraphXMin(), Settings.getInstance().getGraphXMax(), Settings.getInstance().getGraphXDelta(), true, mSkin );
 
-			mSliderPointX.setValue( 0.0f/*mSlidedPointX*/ );
+			mSliderPointX.setValue( mSlidedPointX );
 			mSliderPointX.addListener(new ChangeListener() {
 
 				@Override
@@ -192,7 +195,7 @@ public class QubicGraphScreen implements Screen, InputProcessor
 			mSliderOneGraphXSlopeIm = new Slider( 0.0f, 180.0f, 0.05f, true, mSkin );
 //			mSliderOneGraphXSlopeIm = new Slider( 89.999f, 90.001f, 0.00001f, true, mSkin );
 
-			final float slope = 0.0f;//MyUtils.recalcSlopeAngle( ( float ) mGraphInputData.getRoot().re(), ( float ) mGraphInputData.getRoot().im() );
+			final float slope = mSlidedOneGraphXSlopeIm;//MyUtils.recalcSlopeAngle( ( float ) mGraphInputData.getRoot().re(), ( float ) mGraphInputData.getRoot().im() );
 			mSliderOneGraphXSlopeIm.setValue( slope );
 			mComplexSlopeChangeProperty.set( slope );
 			mComplexSlopeListeners.onChanged( mComplexSlopeChangeProperty );
@@ -207,6 +210,7 @@ public class QubicGraphScreen implements Screen, InputProcessor
 					mSlidedOneGraphXSlopeIm = slopeValue;
 
 					mGraphPointsGeneratorManager.setSlope( mSlidedOneGraphXSlopeIm );
+
 					mGraphPointsGeneratorManager.getGenerator().generateOne();
 
 					mComplexSlopeChangeProperty.set( slopeValue );
@@ -267,7 +271,7 @@ public class QubicGraphScreen implements Screen, InputProcessor
 		}
 		legendTable.row();
 		{
-			final float im = (float)0.0f;
+			final float im = MyUtils.getIAxisDisplacement( mSlidedOneGraphXSlopeIm, mSlidedPointX );
 			final CharSequence sX = String.format( "X = %1$.2f %2$s %3$.2f i", mSlidedPointX, im < 0 ? "-" : "+", Math.abs( im ) );
 			mPointXValueLabel = new Label( sX, mSkin );
 			final BitmapFont font = FontCache.getInstance().get( 20 );
@@ -302,7 +306,7 @@ public class QubicGraphScreen implements Screen, InputProcessor
 		}
 		legendTable.row();
 		{
-			final float slope = 0.0f;
+			final float slope = mSlidedOneGraphXSlopeIm;
 			final CharSequence sLabel = String.format( "X%1$sI = %2$.1f%3$s", Constants.SymbolAngle, slope, Constants.SymbolDegree );
 			mSlopeXILabel = new Label( sLabel, mSkin );
 			final BitmapFont font = FontCache.getInstance().get( 20 );
@@ -392,7 +396,6 @@ public class QubicGraphScreen implements Screen, InputProcessor
 		renderer.begin(ShapeType.Filled);
 		renderer.setColor( Color.BLUE );
 
-		mGraphPointsGeneratorManager.getGenerator().setSlope( mSlidedOneGraphXSlopeIm );
 		mGraphPointsGeneratorManager.getGenerator().getPoint( mSlidedPointX, 0.0f, mVectorPoint );
 
 		final float boxDimension = 0.05f;
